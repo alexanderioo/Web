@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Ссылки</h2>
+<ul>
+  {% for res in resources %}
+    <li><a href="{{ res.link }}" target="_blank">{{ res.title }}</a></li>
+  {% empty %}
+    <li>Нет ссылок.</li>
+  {% endfor %}
+</ul>
+{% endblock %}

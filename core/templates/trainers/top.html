@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %}Лучшие тренеры{% endblock %}
+{% block content %}
+<h2>Тренеры по количеству уроков</h2>
+<ul>
+  {% for trainer in trainers %}
+    <li>{{ trainer.first_name }} {{ trainer.last_name }} — {{ trainer.lesson_count }} занятий</li>
+  {% endfor %}
+</ul>
+{% endblock %}

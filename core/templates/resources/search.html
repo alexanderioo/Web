@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block content %}
+  <h2>Поиск ресурсов</h2>
+  <form method="get">
+    <input type="text" name="q" value="{{ query }}" placeholder="Поиск...">
+    <button type="submit">Искать</button>
+  </form>
+
+  <ul>
+    {% for res in results %}
+      <li>{{ res.title }} — <a href="{{ res.link }}">{{ res.link }}</a></li>
+    {% empty %}
+      <li>Ничего не найдено.</li>
+    {% endfor %}
+  </ul>
+{% endblock %}

@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block content %}
+  <h1>{{ object.title }}</h1>
+  <p>{{ object.content }}</p>
+  {% if object.image %}
+    <img src="{{ object.image.url }}" alt="Изображение">
+  {% endif %}
+  <p>Дата публикации: {{ object.published_at|date:"d.m.Y H:i" }}</p>
+  <a href="{% url 'news_list' %}">← Назад к списку</a>
+{% endblock %}

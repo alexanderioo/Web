@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}Неоплаченные платежи{% endblock %}
+{% block content %}
+<h2>Ожидающие платежи</h2>
+<ul>
+  {% for payment in payments %}
+    <li>{{ payment.user.username }}: {{ payment.amount }} ₽ — {{ payment.status }}</li>
+  {% empty %}
+    <li>Все платежи завершены 🎉</li>
+  {% endfor %}
+</ul>
+{% endblock %}

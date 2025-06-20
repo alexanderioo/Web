@@ -1,0 +1,15 @@
+# Sentry Configuration
+SENTRY_DSN=https://your-sentry-dsn-here@sentry.io/your-project-id
+
+# Environment
+ENVIRONMENT=development
+DEBUG=True
+
+# Django Secret Key (для продакшена)
+SECRET_KEY=your-secret-key-here
+
+# Database (для продакшена)
+DATABASE_URL=sqlite:///db.sqlite3
+
+# Redis (если используется)
+REDIS_URL=redis://localhost:6379/0 

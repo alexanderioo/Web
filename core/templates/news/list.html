@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block content %}
+  <h1>Новости</h1>
+  <a href="{% url 'news_create' %}">Добавить новость</a>
+  <ul>
+    {% for post in news %}
+      <li>
+        <a href="{{ post.get_absolute_url }}">{{ post.title }}</a>
+        — {{ post.created_at|date:"d.m.Y H:i" }}
+        [<a href="{% url 'news_update' post.id %}">Редактировать</a>]
+        [<a href="{% url 'news_delete' post.id %}">Удалить</a>]
+      </li>
+    {% empty %}
+      <li>Новостей пока нет.</li>
+    {% endfor %}
+  </ul>
+{% endblock %}

@@ -1,0 +1,22 @@
+.footer {
+    padding: 20px 0;
+    background-color: var(--header-footer-bg);
+    color: var(--header-footer-text);
+    width: 100%;
+}
+
+.footer .container {
+    text-align: center;
+}
+
+/* Mobile Styles */
+@media (max-width: 390px) {
+    .footer {
+        padding: 15px 0;
+    }
+
+    .footer .container {
+        font-size: 0.9em;
+    }
+}
+  

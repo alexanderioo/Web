@@ -1,0 +1,7 @@
+{% extends "base.html" %}
+{% block title %}Статистика по урокам{% endblock %}
+{% block content %}
+<h2>Статистика по урокам</h2>
+<p>Средняя цена: {{ stats.avg_price }} ₽</p>
+<p>Максимальная цена: {{ stats.max_price }} ₽</p>
+{% endblock %}

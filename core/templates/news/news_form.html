@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block content %}
+  <h1>{{ view.object.pk|yesno:"Редактировать новость,Создать новость" }}</h1>
+  <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Сохранить</button>
+    <a href="{% url 'news_list' %}">Отмена</a>
+  </form>
+{% endblock %}

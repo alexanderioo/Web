@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>{{ post.title }}</title>
+    <style>
+        body { font-family: sans-serif; }
+        h1 { color: #333; }
+        .meta { font-size: 0.9em; color: gray; }
+    </style>
+</head>
+<body>
+    <h1>{{ post.title }}</h1>
+    <p class="meta">Дата публикации: {{ post.published_at }}</p>
+    <p>{{ post.content }}</p>
+</body>
+</html>

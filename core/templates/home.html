@@ -1,0 +1,55 @@
+<div class="widgets">
+
+  <!-- Виджет 1: Последние новости -->
+  <div class="widget">
+    <h3>📰 Последние новости</h3>
+    <ol>
+      {% for post in latest_news %}
+        <li>
+          <a href="{{ post.get_absolute_url }}">{{ post.title }}</a> — {{ post.published_at|date:"d.m.Y" }}
+        </li>
+      {% endfor %}
+    </ol>
+    <a href="{% url 'news_list' %}">Смотреть все новости</a>
+  </div>
+
+  <!-- Виджет 2: Опытные тренеры -->
+  <div class="widget">
+    <h3>🏅 Топ тренеры</h3>
+    <ol>
+      {% for trainer in top_trainers %}
+        <li>{{ trainer.profile.user.get_full_name }} — {{ trainer.experience_years }} лет</li>
+      {% endfor %}
+    </ol>
+    <a href="{% url 'top_trainers' %}">Смотреть всех</a>
+  </div>
+
+  <!-- Виджет 3: Ближайшие уроки -->
+  <div class="widget">
+    <h3>📅 Ближайшие уроки</h3>
+    <ol>
+      {% for lesson in upcoming_lessons %}
+        <li>{{ lesson.date|date:"d.m.Y H:i" }} — {{ lesson.horse.name }} ({{ lesson.price }}₽)</li>
+      {% endfor %}
+    </ol>
+    <a href="{% url 'lesson_schedule' %}">Расписание</a>
+  </div>
+
+  <!-- Виджет 4: Рекомендуемые ресурсы -->
+  <div class="widget">
+    <h3>📚 Рекомендуемые ресурсы</h3>
+    <ol>
+      {% for res in recommended_resources %}
+        <li><a href="{{ res.link }}" target="_blank">{{ res.title }}</a></li>
+      {% endfor %}
+    </ol>
+    <a href="{% url 'resource_list' %}">Все ресурсы</a>
+  </div>
+
+</div>
+
+<!-- Поиск ресурсов -->
+<form action="{% url 'resource_search' %}" method="get">
+  <input type="text" name="q" placeholder="🔍 Поиск по ресурсам...">
+  <button type="submit">Найти</button>
+</form>
