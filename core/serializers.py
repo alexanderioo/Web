@@ -4,11 +4,16 @@ from typing import Optional
 
 class NewsPostSerializer(serializers.ModelSerializer):
     """
-    Сериализатор для модели NewsPost.
+    Сериализатор для новости.
     """
+    author_name = serializers.CharField(source='author.user.username', read_only=True)
+
     class Meta:
         model = NewsPost
-        fields = '__all__'
+        fields = [
+            'id', 'title', 'title_en', 'content', 'image', 'created_at', 
+            'published_at', 'is_active', 'is_scheduled', 'attachment', 'author_name'
+        ]
 
 class UserSerializer(serializers.ModelSerializer):
     """
@@ -35,11 +40,13 @@ class TrainerSerializer(serializers.ModelSerializer):
     lessons_count = serializers.IntegerField(read_only=True)
     is_top_trainer = serializers.SerializerMethodField()
     full_name = serializers.CharField(source='get_full_name', read_only=True)
+    full_name_en = serializers.SerializerMethodField()
 
     class Meta:
         model = Trainer
         fields = [
-            'id', 'full_name', 'first_name', 'last_name', 'bio', 'photo', 
+            'id', 'full_name', 'full_name_en', 'first_name', 'first_name_en', 
+            'last_name', 'last_name_en', 'bio', 'photo', 
             'experience_years', 'lessons_count', 'is_top_trainer'
         ]
 
@@ -50,39 +57,37 @@ class TrainerSerializer(serializers.ModelSerializer):
         top_trainer_ids = self.context.get('top_trainer_ids', [])
         return obj.id in top_trainer_ids
 
+    def get_full_name_en(self, obj: Trainer) -> str:
+        """
+        Возвращает полное имя тренера на английском языке.
+        """
+        if obj.first_name_en and obj.last_name_en:
+            return f"{obj.first_name_en} {obj.last_name_en}"
+        elif obj.first_name_en:
+            return f"{obj.first_name_en} {obj.last_name}"
+        elif obj.last_name_en:
+            return f"{obj.first_name} {obj.last_name_en}"
+        else:
+            return f"{obj.first_name} {obj.last_name}"
+
 class HorseSerializer(serializers.ModelSerializer):
     """
-    Сериализатор для лошади с использованием SerializerMethodField.
+    Сериализатор для лошади.
     """
-    trainer_name = serializers.SerializerMethodField()
-    lessons_this_month = serializers.SerializerMethodField()
+    trainer_names = serializers.SerializerMethodField()
 
     class Meta:
         model = Horse
         fields = [
-            'id', 'name', 'gender', 'photo', 'description',
-            'trainer_name', 'lessons_this_month'
+            'id', 'name', 'name_en', 'birth_date', 'gender', 'photo', 
+            'description', 'stable', 'trainer_names'
         ]
 
-    def get_trainer_name(self, obj: Horse) -> Optional[str]:
+    def get_trainer_names(self, obj: Horse) -> list[str]:
         """
-        Возвращает полное имя тренера, если он назначен.
-        Если тренеров несколько, возвращает их имена через запятую.
+        Возвращает список имен тренеров лошади.
         """
-        trainers = obj.trainers.all()
-        if not trainers:
-            return None
-        
-        trainer_names = [t.get_full_name() for t in trainers]
-        return ", ".join(trainer_names)
-
-    def get_lessons_this_month(self, obj: Horse) -> int:
-        """
-        Возвращает количество занятий у лошади в текущем месяце.
-        """
-        from django.utils import timezone
-        now = timezone.now()
-        return obj.lessons.filter(date__year=now.year, date__month=now.month).count()
+        return [f"{trainer.first_name} {trainer.last_name}" for trainer in obj.trainers.all()]
 
 class LessonSerializer(serializers.ModelSerializer):
     """

@@ -105,6 +105,17 @@ class Trainer(models.Model):
             )
         ]
     )
+    first_name_en = models.CharField(
+        "Имя (англ.)", 
+        max_length=100,
+        blank=True,
+        validators=[
+            RegexValidator(
+                r'^[a-zA-Z\s]+$', 
+                'Английское имя может содержать только латинские буквы и пробелы'
+            )
+        ]
+    )
     last_name = models.CharField(
         "Фамилия", 
         max_length=100,
@@ -112,6 +123,17 @@ class Trainer(models.Model):
             RegexValidator(
                 r'^[а-яА-Яa-zA-Z\s]+$', 
                 'Фамилия может содержать только буквы и пробелы'
+            )
+        ]
+    )
+    last_name_en = models.CharField(
+        "Фамилия (англ.)", 
+        max_length=100,
+        blank=True,
+        validators=[
+            RegexValidator(
+                r'^[a-zA-Z\s]+$', 
+                'Английская фамилия может содержать только латинские буквы и пробелы'
             )
         ]
     )
@@ -168,6 +190,17 @@ class Horse(models.Model):
             RegexValidator(
                 r'^[а-яА-Яa-zA-Z0-9\s\-]+$', 
                 'Имя лошади может содержать только буквы, цифры, пробелы и дефисы'
+            )
+        ]
+    )
+    name_en = models.CharField(
+        "Имя (англ.)", 
+        max_length=100,
+        blank=True,
+        validators=[
+            RegexValidator(
+                r'^[a-zA-Z0-9\s\-]+$', 
+                'Английское имя может содержать только латинские буквы, цифры, пробелы и дефисы'
             )
         ]
     )
@@ -369,8 +402,36 @@ class NewsPost(models.Model):
     Модель новости.
     Содержит заголовок, контент, изображение, дату создания, публикации, статус и автора.
     """
-    title = models.CharField("Заголовок", max_length=200)
-    content = models.TextField("Контент")
+    title = models.CharField(
+        "Заголовок", 
+        max_length=200,
+        validators=[
+            RegexValidator(
+                r'^[а-яА-Яa-zA-Z0-9\s\-\.\,!?]+$', 
+                'Заголовок может содержать только буквы, цифры, пробелы, дефисы, точки, запятые, восклицательные и вопросительные знаки'
+            )
+        ]
+    )
+    title_en = models.CharField(
+        "Заголовок (англ.)", 
+        max_length=200,
+        blank=True,
+        validators=[
+            RegexValidator(
+                r'^[a-zA-Z0-9\s\-\.\,!?]+$', 
+                'Английский заголовок может содержать только латинские буквы, цифры, пробелы, дефисы, точки, запятые, восклицательные и вопросительные знаки'
+            )
+        ]
+    )
+    content = models.TextField(
+        "Контент",
+        validators=[
+            RegexValidator(
+                r'^[а-яА-Яa-zA-Z0-9\s\-\.\,!?<>/]+$', 
+                'Контент может содержать только буквы, цифры, пробелы, дефисы, точки, запятые, восклицательные и вопросительные знаки, а также HTML теги'
+            )
+        ]
+    )
     image = models.ImageField("Изображение", upload_to='news/', blank=True, null=True)
     created_at = models.DateTimeField("Создано", default=timezone.now)
     published_at = models.DateTimeField("Дата публикации", null=True, blank=True)

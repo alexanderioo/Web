@@ -37,6 +37,9 @@ export default function TrainersWidget() {
                 <img src={trainer.photo} alt={trainer.last_name} className="trainer-photo" />
                 <div className="trainer-info">
                   <h3>{trainer.full_name}</h3>
+                  {trainer.full_name_en && (
+                    <h4 className="trainer-name-en">{trainer.full_name_en}</h4>
+                  )}
                   <p>Опыт: {trainer.experience_years} лет</p>
                 </div>
               </div>

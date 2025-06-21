@@ -24,27 +24,31 @@ export default function HorsesWidget() {
 
   return (
     <div className="horses-widget">
-        <div className="widget-title-container">
-            <h2 className="widget-title">Наши лошади</h2>
-        </div>
+      <div className="widget-title-container">
+        <h2 className="widget-title">Наши лошади</h2>
+      </div>
+      
       {loading ? (
         <div>Загрузка лошадей...</div>
       ) : (
         <>
-            <div className="horses-list">
-                {horses.map((horse) => (
-                <div key={horse.id} className="horse-card">
-                    <img src={horse.photo} alt={horse.name} className="horse-photo" />
-                    <div className="horse-info">
-                        <h3>{horse.name}</h3>
-                        <p>{horse.gender === 'male' ? 'Жеребец' : 'Кобыла'}</p>
-                    </div>
+          <div className="horses-list">
+            {horses.map((horse) => (
+              <div key={horse.id} className="horse-card">
+                <img src={horse.photo} alt={horse.name} className="horse-photo" />
+                <div className="horse-info">
+                  <h3>{horse.name}</h3>
+                  {horse.name_en && (
+                    <h4 className="horse-name-en">{horse.name_en}</h4>
+                  )}
+                  <p>{horse.gender === 'male' ? 'Жеребец' : 'Кобыла'}</p>
                 </div>
-                ))}
-            </div>
-            <div className="all-horses-link-container">
-                <Link to="/horses" className="button">Все лошади</Link>
-            </div>
+              </div>
+            ))}
+          </div>
+          <div className="all-horses-link-container">
+            <Link to="/horses" className="button">Все лошади</Link>
+          </div>
         </>
       )}
     </div>

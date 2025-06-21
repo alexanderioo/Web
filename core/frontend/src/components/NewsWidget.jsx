@@ -75,6 +75,11 @@ export default function NewsWidget() {
                   <h3 className="news-title-widget" onClick={() => openDetail(item.id)}>
                     {item.title}
                   </h3>
+                  {item.title_en && (
+                    <h4 className="news-title-en-widget" onClick={() => openDetail(item.id)}>
+                      {item.title_en}
+                    </h4>
+                  )}
                   <p className="published-date">
                     {item.published_at
                       ? new Date(item.published_at).toLocaleDateString()
