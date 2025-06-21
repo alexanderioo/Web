@@ -1,0 +1,15 @@
+[Unit]
+Description=Celery Worker Service
+After=network.target
+
+[Service]
+Type=simple
+User=www-data
+Group=www-data
+WorkingDirectory=/path/to/your/project
+Environment="DJANGO_SETTINGS_MODULE=myproject.settings"
+ExecStart=/path/to/your/project/venv/bin/celery -A myproject worker -l info
+Restart=always
+
+[Install]
+WantedBy=multi-user.target 

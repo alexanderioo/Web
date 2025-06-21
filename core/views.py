@@ -4,17 +4,23 @@ from django.utils import timezone
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, UpdateView, DeleteView, DetailView
 from .models import Lesson, Trainer, NewsPost, Payment, UserProfile, Horse, Resource
-from django.http import HttpResponse, HttpRequest
+from django.http import HttpResponse, HttpRequest, JsonResponse
 from django.contrib.admin.views.decorators import staff_member_required
 from django.template.loader import render_to_string
 from .serializers import NewsPostSerializer, TrainerSerializer, HorseSerializer, LessonSerializer, PaymentSerializer
 import tempfile
-from rest_framework import viewsets
+from rest_framework import viewsets, permissions
 from rest_framework.filters import SearchFilter, OrderingFilter
+from rest_framework.decorators import action
+from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
 from .filters import NewsPostFilter, TrainerFilter, HorseFilter, LessonFilter, PaymentFilter
 from typing import Any
 from silk.profiling.profiler import silk_profile
+from django.contrib import messages
+from django.core.paginator import Paginator
+from django.core.mail import send_mail
+from django.conf import settings
 
 
 def home_view(request: HttpRequest) -> HttpResponse:
@@ -95,6 +101,8 @@ def home_view(request: HttpRequest) -> HttpResponse:
                 <li><strong>Silk Slow Query Test:</strong> <a href="/silk/test-slow-query/">/silk/test-slow-query/</a></li>
                 <li><strong>Silk Memory Usage Test:</strong> <a href="/silk/test-memory-usage/">/silk/test-memory-usage/</a></li>
                 <li><strong>Silk Database Queries Test:</strong> <a href="/silk/test-database-queries/">/silk/test-database-queries/</a></li>
+                <li><strong>Email Test (Mailhog):</strong> <a href="/test-email/">/test-email/</a></li>
+                <li><strong>Mailhog UI:</strong> <a href="http://localhost:8025" target="_blank">http://localhost:8025</a></li>
             </ul>
             
             {stats_html}
@@ -362,4 +370,28 @@ def test_silk_database_queries(request: HttpRequest) -> HttpResponse:
         f"Новостей с вложениями: {news_with_attachments.count()}, "
         f"Молодых лошадей: {young_horses.count()}, "
         f"Опытных тренеров: {experienced_trainers.count()}"
-    ) 
+    )
+
+
+def test_email_sending(request: HttpRequest) -> HttpResponse:
+    """
+    Тестовое представление для проверки отправки email через Mailhog
+    
+    Args:
+        request: HTTP запрос
+        
+    Returns:
+        HttpResponse: Ответ с информацией об отправке email
+    """
+    try:
+        # Имитация отправки email
+        send_mail(
+            'Тестовое сообщение',
+            'Это тестовое сообщение, отправленное через Mailhog',
+            'noreply@example.com',
+            ['recipient@example.com'],
+            fail_silently=False
+        )
+        return HttpResponse("Email отправлен успешно!")
+    except Exception as e:
+        return HttpResponse(f"Ошибка при отправке email: {e}") 

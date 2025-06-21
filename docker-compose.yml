@@ -1,0 +1,81 @@
+version: '3.8'
+
+services:
+  # Redis - брокер сообщений для Celery
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    restart: unless-stopped
+
+  # Django приложение
+  django:
+    build: .
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+      - media_files:/app/media
+    environment:
+      - DEBUG=True
+      - DJANGO_SETTINGS_MODULE=myproject.settings
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+    depends_on:
+      - redis
+    restart: unless-stopped
+    command: python manage.py runserver 0.0.0.0:8000
+
+  # Celery Worker
+  celery_worker:
+    build: .
+    volumes:
+      - .:/app
+      - media_files:/app/media
+    environment:
+      - DEBUG=True
+      - DJANGO_SETTINGS_MODULE=myproject.settings
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+    depends_on:
+      - redis
+      - django
+    restart: unless-stopped
+    command: celery -A myproject worker -l info
+
+  # Celery Beat (планировщик задач)
+  celery_beat:
+    build: .
+    volumes:
+      - .:/app
+      - media_files:/app/media
+    environment:
+      - DEBUG=True
+      - DJANGO_SETTINGS_MODULE=myproject.settings
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+    depends_on:
+      - redis
+      - django
+    restart: unless-stopped
+    command: celery -A myproject beat -l info
+
+  # React фронтенд
+  frontend:
+    build: ./core/frontend
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./core/frontend:/app
+      - /app/node_modules
+    environment:
+      - VITE_API_URL=http://localhost:8000/api
+    depends_on:
+      - django
+    restart: unless-stopped
+
+volumes:
+  redis_data:
+  media_files: 

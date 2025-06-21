@@ -81,10 +81,17 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',  # Требуется для django-allauth
     'rest_framework',
     'corsheaders',
     'django_filters',
     'silk',  # Django Silk для профилирования
+    
+    # Django Allauth
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.yandex',
 ]
 
 MIDDLEWARE = [
@@ -97,6 +104,9 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    
+    # Django Allauth middleware
+    'allauth.account.middleware.AccountMiddleware',
     
     # Sentry Middleware
     'core.middleware.SentryMiddleware',
@@ -198,8 +208,8 @@ REST_FRAMEWORK = {
 # Django Silk Settings
 SILKY_PYTHON_PROFILER = True
 SILKY_PYTHON_PROFILER_MEMORY = True
-SILKY_AUTHENTICATION = True
-SILKY_AUTHORISATION = True
+SILKY_AUTHENTICATION = False  # Отключаем аутентификацию для разработки
+SILKY_AUTHORISATION = False   # Отключаем авторизацию для разработки
 SILKY_MAX_RECORDED_REQUESTS = 1000
 SILKY_MAX_RECORDED_REQUESTS_CHECK_PERCENT = 10
 SILKY_META = True
@@ -207,5 +217,91 @@ SILKY_IGNORE_PATTERNS = [
     r'/admin/',
     r'/silk/',
     r'/static/',
-    r'/media/',
+    # r'/media/',  # Убираем медиа файлы из игнорируемых
 ]
+
+# Celery Configuration
+CELERY_BROKER_URL = os.getenv('CELERY_BROKER_URL', 'redis://localhost:6379/0')
+CELERY_RESULT_BACKEND = os.getenv('CELERY_RESULT_BACKEND', 'redis://localhost:6379/0')
+
+# Настройки Celery
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TIMEZONE = TIME_ZONE
+
+# Настройки планировщика задач (Celery Beat)
+CELERY_BEAT_SCHEDULE = {
+    'daily-cleanup': {
+        'task': 'core.tasks.daily_cleanup',
+        'schedule': 86400.0,  # 24 часа
+    },
+    'weekly-reports': {
+        'task': 'core.tasks.weekly_reports',
+        'schedule': 604800.0,  # 7 дней
+    },
+    'weekly-reports-email': {
+        'task': 'core.tasks.send_weekly_reports_email',
+        'schedule': 604800.0,  # 7 дней
+    },
+    'monthly-analytics': {
+        'task': 'core.tasks.monthly_analytics',
+        'schedule': 2592000.0,  # 30 дней
+    },
+    'lesson-reminders': {
+        'task': 'core.tasks.send_lesson_reminders',
+        'schedule': 3600.0,  # 1 час
+    },
+}
+
+# Email Configuration для Mailhog
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'localhost'
+EMAIL_PORT = 1025  # SMTP порт Mailhog
+EMAIL_HOST_USER = ''
+EMAIL_HOST_PASSWORD = ''
+EMAIL_USE_TLS = False
+EMAIL_USE_SSL = False
+DEFAULT_FROM_EMAIL = 'noreply@horse-stable.com'
+
+# Django Allauth Settings
+SITE_ID = 1
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
+]
+
+# Настройки аккаунта
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_USERNAME_REQUIRED = False
+ACCOUNT_AUTHENTICATION_METHOD = 'email'
+ACCOUNT_EMAIL_VERIFICATION = 'none'  # Для разработки отключаем верификацию email
+ACCOUNT_UNIQUE_EMAIL = True
+ACCOUNT_EMAIL_CONFIRMATION_EXPIRE_DAYS = 1
+
+# Настройки входа/выхода
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'
+LOGIN_URL = '/accounts/login/'
+
+# Настройки социальных аккаунтов
+SOCIALACCOUNT_PROVIDERS = {
+    'yandex': {
+        'APP': {
+            'client_id': os.getenv('YANDEX_CLIENT_ID', ''),
+            'secret': os.getenv('YANDEX_CLIENT_SECRET', ''),
+            'key': ''
+        },
+        'SCOPE': [
+            'login:info',
+            'login:email',
+            'login:avatar',
+        ],
+    }
+}
+
+# Настройки для автоматического создания пользователей
+SOCIALACCOUNT_AUTO_SIGNUP = True
+SOCIALACCOUNT_EMAIL_REQUIRED = False
+SOCIALACCOUNT_EMAIL_VERIFICATION = False

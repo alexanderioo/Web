@@ -18,6 +18,16 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include(router.urls)),
     
+    # API URLs
+    path('api/news/', views.NewsPostViewSet.as_view({'get': 'list'}), name='api_news_list'),
+    path('api/trainers/', views.TrainerViewSet.as_view({'get': 'list'}), name='api_trainers_list'),
+    path('api/horses/', views.HorseViewSet.as_view({'get': 'list'}), name='api_horses_list'),
+    path('api/lessons/', views.LessonViewSet.as_view({'get': 'list'}), name='api_lessons_list'),
+    path('api/payments/', views.PaymentViewSet.as_view({'get': 'list'}), name='api_payments_list'),
+    
+    # Django Allauth URLs
+    path('accounts/', include('allauth.urls')),
+    
     # Sentry Test URLs
     path('sentry/test-error/', views.test_sentry_error, name='sentry_test_error'),
     path('sentry/test-performance/', views.test_sentry_performance, name='sentry_test_performance'),
@@ -28,8 +38,12 @@ urlpatterns = [
     path('silk/test-memory-usage/', views.test_silk_memory_usage, name='silk_test_memory_usage'),
     path('silk/test-database-queries/', views.test_silk_database_queries, name='silk_test_database_queries'),
     
+    # Email Test URL
+    path('test-email/', views.test_email_sending, name='test_email_sending'),
+    
     # Django Silk URLs
     path('silk/', include('silk.urls', namespace='silk')),
 ]
 
-urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
