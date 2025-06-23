@@ -10,7 +10,8 @@ from .models import (
     ScheduleRequest,
     Payment,
     HorseTrainerRelation,
-    Resource
+    Resource,
+    AfExam
 )
 from reportlab.pdfgen import canvas
 from django.http import HttpResponse
@@ -204,3 +205,19 @@ class ResourceAdmin(admin.ModelAdmin):
     Админка для модели Resource.
     """
     list_display = ("title", "link")
+
+@admin.register(AfExam)
+class AfExamAdmin(admin.ModelAdmin):
+    list_display = ("title", "date", "is_public", "created_at", "image_tag")
+    list_filter = ("is_public", "created_at")
+    search_fields = ("title", "users__email")
+    filter_horizontal = ("users",)
+    readonly_fields = ("created_at", "image_tag")
+    date_hierarchy = "date"
+
+    def image_tag(self, obj):
+        if obj.image:
+            return f'<img src="{obj.image.url}" style="max-height: 60px; max-width: 100px;" />'
+        return "—"
+    image_tag.short_description = "Картинка"
+    image_tag.allow_tags = True
