@@ -2,6 +2,7 @@ import "./HomePage.css";
 import NewsWidget from "../components/NewsWidget";
 import TrainersWidget from "../components/TrainersWidget";
 import HorsesWidget from "../components/HorsesWidget";
+import { Link } from "react-router-dom";
 
 export default function HomePage() {
   return (

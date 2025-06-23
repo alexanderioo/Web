@@ -3,11 +3,11 @@ from django.db.models import Count, Avg, Max
 from django.utils import timezone
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, UpdateView, DeleteView, DetailView
-from .models import Lesson, Trainer, NewsPost, Payment, UserProfile, Horse, Resource
+from .models import Lesson, Trainer, NewsPost, Payment, UserProfile, Horse, Resource, AfExam
 from django.http import HttpResponse, HttpRequest, JsonResponse
 from django.contrib.admin.views.decorators import staff_member_required
 from django.template.loader import render_to_string
-from .serializers import NewsPostSerializer, TrainerSerializer, HorseSerializer, LessonSerializer, PaymentSerializer
+from .serializers import NewsPostSerializer, TrainerSerializer, HorseSerializer, LessonSerializer, PaymentSerializer, AfExamSerializer
 import tempfile
 from rest_framework import viewsets, permissions
 from rest_framework.filters import SearchFilter, OrderingFilter
@@ -198,6 +198,11 @@ class PaymentViewSet(viewsets.ReadOnlyModelViewSet):
     search_fields = ['user__username', 'purpose']
     ordering_fields = ['timestamp', 'amount', 'status']
     ordering = ['-timestamp']
+
+
+class AfExamViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = AfExam.objects.filter(is_public=True)
+    serializer_class = AfExamSerializer
 
 
 # Sentry Test Views

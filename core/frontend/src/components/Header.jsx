@@ -31,6 +31,7 @@ export default function Header() {
           <NavLink to="/about" onClick={closeMenu}>О нас</NavLink>
           <NavLink to="/services" onClick={closeMenu}>Услуги</NavLink>
           <NavLink to="/filters" onClick={closeMenu}>Фильтры</NavLink>
+          <NavLink to="/afexam" onClick={closeMenu}>Экзамены</NavLink>
           <NavLink to="/contact" onClick={closeMenu}>Контакты</NavLink>
         </nav>
       </div>

@@ -217,7 +217,7 @@ class AfExamAdmin(admin.ModelAdmin):
 
     def image_tag(self, obj):
         if obj.image:
-            return f'<img src="{obj.image.url}" style="max-height: 60px; max-width: 100px;" />'
+            return f'<img src="{obj.image.url}" style="max-height: 1300px; max-width: 300px;" />'
         return "—"
     image_tag.short_description = "Картинка"
     image_tag.allow_tags = True

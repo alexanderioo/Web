@@ -17,6 +17,7 @@ urlpatterns = [
     path('', views.home_view, name='home'),
     path('admin/', admin.site.urls),
     path('api/', include(router.urls)),
+    path('api/', include('core.urls')),
     
     # API URLs
     path('api/news/', views.NewsPostViewSet.as_view({'get': 'list'}), name='api_news_list'),

@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import NewsPost, Trainer, Horse, UserProfile, User, Lesson, Payment
+from .models import NewsPost, Trainer, Horse, UserProfile, User, Lesson, Payment, AfExam
 from typing import Optional
 
 class NewsPostSerializer(serializers.ModelSerializer):
@@ -133,3 +133,11 @@ class PaymentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Payment
         fields = ['id', 'user', 'user_name', 'lesson', 'amount', 'timestamp', 'status', 'purpose', 'reference_id']
+
+class AfExamSerializer(serializers.ModelSerializer):
+    users = serializers.SlugRelatedField(many=True, read_only=True, slug_field='email')
+    image = serializers.ImageField(use_url=True)
+
+    class Meta:
+        model = AfExam
+        fields = ['id', 'title', 'created_at', 'date', 'image', 'users', 'is_public']

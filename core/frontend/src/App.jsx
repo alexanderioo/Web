@@ -4,6 +4,7 @@ import Footer from "./components/Footer";
 import HomePage from "./pages/HomePage";
 import NewsListPage from "./pages/NewsListPage";
 import FilterDemo from "./components/FilterDemo";
+import AfExamPage from "./pages/AfExamPage";
 import "./App.css";
 
 function App() {
@@ -16,6 +17,7 @@ function App() {
             <Route path="/" element={<HomePage />} />
             <Route path="/news" element={<NewsListPage />} />
             <Route path="/filters" element={<FilterDemo />} />
+            <Route path="/afexam" element={<AfExamPage />} />
           </Routes>
         </main>
         <Footer />
