@@ -493,3 +493,19 @@ class Resource(models.Model):
 
     def __str__(self):
         return self.title
+
+class AfExam(models.Model):
+    title = models.CharField("Название экзамена", max_length=255)
+    created_at = models.DateTimeField("Дата создания", auto_now_add=True)
+    date = models.DateTimeField("Дата проведения экзамена")
+    image = models.ImageField("Задание (картинка)", upload_to='exams/', blank=True, null=True)
+    users = models.ManyToManyField(User, verbose_name="Пользователи", related_name="afexams")
+    is_public = models.BooleanField("Опубликовано", default=False)
+
+    class Meta:
+        verbose_name = "Экзамен"
+        verbose_name_plural = "Экзамены"
+        ordering = ["-date"]
+
+    def __str__(self):
+        return self.title
